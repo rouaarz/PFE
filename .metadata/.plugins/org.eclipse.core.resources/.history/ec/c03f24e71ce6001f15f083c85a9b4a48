@@ -1,0 +1,5 @@
+package com.cni.plateformetesttechnique.model;
+
+public class User {
+
+}
