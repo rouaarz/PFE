@@ -9,5 +9,4 @@ public class PlateformeTestTechniqueApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(PlateformeTestTechniqueApplication.class, args);
 	}
-
 }

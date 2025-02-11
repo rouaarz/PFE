@@ -26,6 +26,8 @@ public class Question  {
     @Enumerated(EnumType.STRING)
     private NiveauQuestion niveau;
 
+	@OneToMany(mappedBy = "question", cascade = CascadeType.ALL)
+	private List<TestQuestion> testQuestions;
 	
 	public long  getId() {
 		return id;
