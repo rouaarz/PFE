@@ -1,5 +1,6 @@
 package com.cni.plateformetesttechnique.controller;
 
+import com.cni.plateformetesttechnique.model.Question;
 import com.cni.plateformetesttechnique.model.Test;
 import com.cni.plateformetesttechnique.model.TestQuestion;
 import com.cni.plateformetesttechnique.service.TestService;
@@ -30,4 +31,26 @@ public class TestController {
         List<TestQuestion> addedQuestions = testService.addQuestionsToTest(testId, testQuestions);
         return ResponseEntity.ok(addedQuestions);
     }
+    @GetMapping("/{testId}/questions")
+    public ResponseEntity<List<Question>> getQuestionsForTest(@PathVariable Long testId) {
+        List<Question> questions = testService.getQuestionsForTest(testId);
+        return ResponseEntity.ok(questions);
+    }
+    @GetMapping("/{testId}/details")
+    public ResponseEntity<Test> getTestDetails(@PathVariable Long testId) {
+        Test testDetails = testService.getTestDetails(testId);
+        return ResponseEntity.ok(testDetails);
+    }
+    @PutMapping("/{testId}/publish")
+    public ResponseEntity<Test> publishTest(@PathVariable Long testId, @RequestParam Boolean accesRestreint) {
+        Test publishedTest = testService.publishTest(testId, accesRestreint);
+        return ResponseEntity.ok(publishedTest);
+    }
+    @PostMapping("/{testId}/invite")
+    public ResponseEntity<String> inviteDevelopers(@PathVariable Long testId, @RequestBody List<Long> developerIds) {
+        testService.inviteDevelopers(testId, developerIds);
+        return ResponseEntity.ok("Invitations envoyées avec succès");
+    }
+
+
 }

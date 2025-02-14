@@ -1,5 +1,6 @@
 package com.cni.plateformetesttechnique.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 @Entity
@@ -12,6 +13,7 @@ public class TestQuestion {
 
     @ManyToOne
     @JoinColumn(name = "id_test", nullable = false)
+    @JsonIgnore
     private Test test;
 
     @ManyToOne

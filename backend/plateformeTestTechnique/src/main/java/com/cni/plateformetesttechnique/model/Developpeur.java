@@ -15,6 +15,11 @@ public class Developpeur extends User {
     private List<String> technologies;
 
     private int experience;
+	@OneToMany(mappedBy = "developpeur", cascade = CascadeType.ALL)
+	private List<InvitationTest> invitations;
+	public Developpeur() {
+		super(); // ✅ Appelle le constructeur de `User`
+	}
 
 	public String getSpecialite() {
 		return specialite;
