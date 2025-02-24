@@ -1,5 +1,6 @@
 package com.cni.plateformetesttechnique.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -16,13 +17,12 @@ public class Test {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String titre;
     private String description;
     private Integer duree; // En minutes (NULL = illimité)
 
     @Column(nullable = false)
-    private String type; // QCM, Algo, Mixte...
+    private String type; // QCM, Algo, Mixte... TypeTest
 
     private Boolean accesPublic; // true = ouvert à tous, false = sur invitation
     private Integer limiteTentatives; // NULL = illimité
@@ -33,11 +33,10 @@ public class Test {
     private LocalDateTime dateCreation;
     private LocalDateTime dateExpiration; // NULL = pas de date limite
 
-    @ManyToOne
-    @JoinColumn(name = "id_administrateur", nullable = false)
-    private Administrateur administrateur;
+
 
     @OneToMany(mappedBy = "test", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<TestQuestion> testQuestions;
 
     // Getters et Setters
@@ -121,13 +120,8 @@ public class Test {
         this.dateExpiration = dateExpiration;
     }
 
-    public Administrateur getAdministrateur() {
-        return administrateur;
-    }
 
-    public void setAdministrateur(Administrateur administrateur) {
-        this.administrateur = administrateur;
-    }
+
 
     public List<TestQuestion> getTestQuestions() {
         return testQuestions;

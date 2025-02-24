@@ -1,35 +1,37 @@
 package com.cni.plateformetesttechnique.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.Data;
-
 import java.util.List;
 
 @Entity
-@Data
-public class Question  {
+public class Question {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 
-    @Enumerated(EnumType.STRING)
-    private TypeQuestion type;
+	@Enumerated(EnumType.STRING)
+	private TypeQuestion type;
 
-    private String enonce;
+	private String enonce;
 
-    @ElementCollection
-    @CollectionTable(name = "question_reponses", joinColumns = @JoinColumn(name = "question_id"))
-    @Column(name = "reponse")
-    private List<String> reponses;
-    
-    @Enumerated(EnumType.STRING)
-    private NiveauQuestion niveau;
+	@OneToMany(mappedBy = "question", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	private List<AnswerOption> answerOptions; // Options de réponse pour la question
+
+	@Enumerated(EnumType.STRING)
+	private NiveauQuestion niveau;
 
 	@OneToMany(mappedBy = "question", cascade = CascadeType.ALL)
+	@JsonIgnore
+
 	private List<TestQuestion> testQuestions;
-	
-	public long  getId() {
+
+	// Constructeur par défaut
+	public Question() {}
+
+	// Getters et Setters
+	public Long getId() {
 		return id;
 	}
 
@@ -53,12 +55,12 @@ public class Question  {
 		this.enonce = enonce;
 	}
 
-	public List<String> getReponses() {
-		return reponses;
+	public List<AnswerOption> getAnswerOptions() {
+		return answerOptions;
 	}
 
-	public void setReponses(List<String> reponses) {
-		this.reponses = reponses;
+	public void setAnswerOptions(List<AnswerOption> answerOptions) {
+		this.answerOptions = answerOptions;
 	}
 
 	public NiveauQuestion getNiveau() {
@@ -69,18 +71,11 @@ public class Question  {
 		this.niveau = niveau;
 	}
 
-	 public Question(Long id, TypeQuestion type, String enonce, List<String> reponses, NiveauQuestion niveau) {
-	        this.id = id;
-	        this.type = type;
-	        this.enonce = enonce;
-	        this.reponses = reponses;
-	        this.niveau = niveau;
-	    }
-
-	  
-	    public Question() {}
-
+	public List<TestQuestion> getTestQuestions() {
+		return testQuestions;
 	}
 
-
-
+	public void setTestQuestions(List<TestQuestion> testQuestions) {
+		this.testQuestions = testQuestions;
+	}
+}

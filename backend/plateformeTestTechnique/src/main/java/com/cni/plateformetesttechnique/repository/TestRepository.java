@@ -11,5 +11,4 @@ public interface TestRepository extends JpaRepository<Test, Long> {
 
     List<Test> findByStatut(String statut); // Récupérer les tests par statut (BROUILLON, PUBLIE)
 
-    List<Test> findByAdministrateurId(Long adminId); // Récupérer tous les tests créés par un administrateur
 }

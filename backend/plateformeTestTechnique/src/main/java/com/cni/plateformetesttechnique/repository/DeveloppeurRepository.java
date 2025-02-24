@@ -10,4 +10,6 @@ public interface DeveloppeurRepository extends JpaRepository<Developpeur, Long> 
 
     // Récupérer un développeur par son email
     Optional<Developpeur> findByEmail(String email);
+    Optional<Developpeur> findById(Long id);
+
 }

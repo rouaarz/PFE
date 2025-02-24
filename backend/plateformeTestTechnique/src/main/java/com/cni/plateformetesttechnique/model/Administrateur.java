@@ -15,6 +15,5 @@ public class Administrateur extends User {
 
     private String grade; // Ex: "Responsable RH", "Tech Lead"
 
-    @OneToMany(mappedBy = "administrateur", cascade = CascadeType.ALL)
-    private List<Test> testsCrees;
+
 }

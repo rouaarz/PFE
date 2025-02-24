@@ -1,7 +1,6 @@
 package com.cni.plateformetesttechnique.service;
 
 import com.cni.plateformetesttechnique.model.Reponse;
-import com.cni.plateformetesttechnique.repository.ReponseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
