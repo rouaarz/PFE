@@ -11,15 +11,16 @@ import org.springframework.web.server.ResponseStatusException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class TestService {
 
     @Autowired
     private TestRepository testRepository;
-
     @Autowired
-    private AdministrateurRepository administrateurRepository;
+    private DeveloppeurResponseRepository developpeurResponseRepository;
+
     @Autowired
     private QuestionRepository questionRepository; // Correction ici
     @Autowired
@@ -32,18 +33,17 @@ public class TestService {
     @Autowired
     private EmailService emailService;
 
-    public Test createTest(Test test, Long adminId) {
-        // Vérifier si l'administrateur existe
-        Administrateur admin = administrateurRepository.findById(adminId)
-                .orElseThrow(() -> new RuntimeException("Administrateur non trouvé"));
+    public Test createTest(Test test) {
 
         // Définir les valeurs par défaut
-        test.setAdministrateur(admin);
         test.setStatut("BROUILLON");
         test.setDateCreation(LocalDateTime.now());
 
         // Sauvegarde du test
         return testRepository.save(test);
+    }
+    public Optional<Test> getTestById(Long testId) {
+        return testRepository.findById(testId);
     }
     public Test updateTest(Long testId, Test updatedTest) {
         // Vérifier si le test existe
@@ -67,52 +67,52 @@ public class TestService {
         // Sauvegarder les modifications
         return testRepository.save(existingTest);
     }
-    public List<Question> getQuestionsForTest(Long testId) {
-        // Récupérer les questions associées au test
-        List<TestQuestion> testQuestions = testQuestionRepository.findByTestId(testId);
+//    public List<Question> getQuestionsForTest(Long testId) {
+//        // Récupérer les questions associées au test
+//        List<TestQuestion> testQuestions = testQuestionRepository.findByTestId(testId);
+//
+//        // Extraire les questions de l'association TestQuestion
+//        List<Question> questions = new ArrayList<>();
+//        for (TestQuestion testQuestion : testQuestions) {
+//            questions.add(testQuestion.getQuestion());
+//        }
+//
+//        return questions; // Retourner la liste des questions
+//    }
 
-        // Extraire les questions de l'association TestQuestion
-        List<Question> questions = new ArrayList<>();
-        for (TestQuestion testQuestion : testQuestions) {
-            questions.add(testQuestion.getQuestion());
-        }
-
-        return questions; // Retourner la liste des questions
-    }
-
-    public List<TestQuestion> addQuestionsToTest(Long testId, List<TestQuestion> testQuestions) {
-        // Vérifier si le test existe
-        Test test = testRepository.findById(testId)
-                .orElseThrow(() -> new RuntimeException("Test non trouvé"));
-
-        // Vérifier que le test est en brouillon
-        if (!"BROUILLON".equals(test.getStatut())) {
-            throw new RuntimeException("Impossible d'ajouter des questions à un test déjà publié");
-        }
-
-        List<TestQuestion> savedTestQuestions = new ArrayList<>();
-
-        for (TestQuestion tq : testQuestions) {
-            // Vérifier que la question existe
-            Question question = questionRepository.findById(tq.getQuestion().getId()) // Correction ici
-                    .orElseThrow(() -> new RuntimeException("Question non trouvée : ID " + tq.getQuestion().getId()));
-
-            // Vérifier que la question n'est pas déjà associée au test
-            boolean alreadyExists = testQuestionRepository.findByTestId(testId).stream() // Correction ici
-                    .anyMatch(q -> Long.valueOf(q.getQuestion().getId()).equals(Long.valueOf(question.getId()))); // Correction ici
-
-            if (alreadyExists) {
-                throw new RuntimeException("La question ID " + question.getId() + " est déjà associée à ce test");
-            }
-
-            // Créer et enregistrer l'association Test - Question
-            TestQuestion newTestQuestion = new TestQuestion(test, question, tq.getPoints(), tq.getOrdre());
-
-            savedTestQuestions.add(testQuestionRepository.save(newTestQuestion)); // Correction ici
-        }
-
-        return savedTestQuestions;
-    }
+//    public List<TestQuestion> addQuestionsToTest(Long testId, List<TestQuestion> testQuestions) {
+//        // Vérifier si le test existe
+//        Test test = testRepository.findById(testId)
+//                .orElseThrow(() -> new RuntimeException("Test non trouvé"));
+//
+//        // Vérifier que le test est en brouillon
+//        if (!"BROUILLON".equals(test.getStatut())) {
+//            throw new RuntimeException("Impossible d'ajouter des questions à un test déjà publié");
+//        }
+//
+//        List<TestQuestion> savedTestQuestions = new ArrayList<>();
+//
+//        for (TestQuestion tq : testQuestions) {
+//            // Vérifier que la question existe
+//            Question question = questionRepository.findById(tq.getQuestion().getId()) // Correction ici
+//                    .orElseThrow(() -> new RuntimeException("Question non trouvée : ID " + tq.getQuestion().getId()));
+//
+//            // Vérifier que la question n'est pas déjà associée au test
+//            boolean alreadyExists = testQuestionRepository.findByTestId(testId).stream() // Correction ici
+//                    .anyMatch(q -> Long.valueOf(q.getQuestion().getId()).equals(Long.valueOf(question.getId()))); // Correction ici
+//
+//            if (alreadyExists) {
+//                throw new RuntimeException("La question ID " + question.getId() + " est déjà associée à ce test");
+//            }
+//
+//            // Créer et enregistrer l'association Test - Question
+//            TestQuestion newTestQuestion = new TestQuestion(test, question, tq.getPoints(), tq.getOrdre());
+//
+//            savedTestQuestions.add(testQuestionRepository.save(newTestQuestion)); // Correction ici
+//        }
+//
+//        return savedTestQuestions;
+//    }
     public Test getTestDetails(Long testId) {
         // Vérifier si le test existe
         Test test = testRepository.findById(testId)
@@ -125,6 +125,9 @@ public class TestService {
         test.setTestQuestions(testQuestions);
 
         return test;
+    }
+    public List<Test> getAllTests() {
+        return testRepository.findAll();
     }
     public void sendInvitationEmails(Test test) {
         List<InvitationTest> invitations = invitationTestRepository.findByTest(test);
@@ -162,38 +165,50 @@ public class TestService {
 
         return publishedTest;
     }
-    public void inviteDevelopers(Long testId, List<Long> developerIds) {
-        Test test = testRepository.findById(testId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Test non trouvé"));
+    public boolean isTestCompleted(Long testId, Long developpeurId) {
+        // Récupérer le nombre total de questions du test
+        int totalQuestions = testQuestionRepository.countByTest_Id(testId);
 
-        if (!"PUBLIE".equals(test.getStatut())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Vous devez publier le test avant d'inviter des développeurs");
-        }
+        // Récupérer le nombre de questions auxquelles le développeur a répondu
+        int answeredQuestions = developpeurResponseRepository.countByTest_IdAndDeveloppeur_Id(testId, developpeurId);
 
-        for (Long devId : developerIds) {
-            Developpeur developer = developpeurRepository.findById(devId)
-                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Développeur non trouvé"));
-
-            boolean alreadyInvited = invitationTestRepository.findByTestAndDeveloppeur(test, developer).isPresent();
-            if (alreadyInvited) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Le développeur ID " + devId + " est déjà invité");
-            }
-
-            InvitationTest invitation = new InvitationTest();
-            invitation.setTest(test);
-            invitation.setDeveloppeur(developer);
-            invitation.setStatut("PENDING");
-            invitation.setDateInvitation(LocalDateTime.now());
-
-            invitationTestRepository.save(invitation);
-
-            System.out.println(" Invitation enregistrée pour : " + developer.getEmail()); // ✅ Debug
-
-            //  Vérifier si l'email est bien appelé ici
-            emailService.sendInvitationEmail(invitation);
-            System.out.println(" Email envoyé à : " + developer.getEmail()); // ✅ Debug
-        }
+        // Si le développeur a répondu à toutes les questions, le test est complété
+        return answeredQuestions == totalQuestions;
     }
+
+//    public void inviteDevelopers(Long testId, List<Long> developerIds) {
+//        Test test = testRepository.findById(testId)
+//                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Test non trouvé"));
+//
+//        if (!"PUBLIE".equals(test.getStatut())) {
+//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Vous devez publier le test avant d'inviter des développeurs");
+//        }
+//
+//        for (Long devId : developerIds) {
+//            Developpeur developer = developpeurRepository.findById(devId)
+//                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Développeur non trouvé"));
+//            System.out.println("Développeur trouvé : " + developer);
+//
+//            boolean alreadyInvited = invitationTestRepository.findByTestAndDeveloppeur(test, developer).isPresent();
+//            if (alreadyInvited) {
+//                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Le développeur ID " + devId + " est déjà invité");
+//            }
+//
+//            InvitationTest invitation = new InvitationTest();
+//            invitation.setTest(test);
+//            invitation.setDeveloppeur(developer);
+//            invitation.setStatut("PENDING");
+//            invitation.setDateInvitation(LocalDateTime.now());
+//
+//            invitationTestRepository.save(invitation);
+//
+//            System.out.println(" Invitation enregistrée pour : " + developer.getEmail()); // ✅ Debug
+//
+//            //  Vérifier si l'email est bien appelé ici
+//            emailService.sendInvitationEmail(invitation);
+//            System.out.println(" Email envoyé à : " + developer.getEmail()); // ✅ Debug
+//        }
+//    }
 
 
 

@@ -4,6 +4,8 @@ import com.cni.plateformetesttechnique.model.Question;
 import com.cni.plateformetesttechnique.model.Test;
 import com.cni.plateformetesttechnique.model.TestQuestion;
 import com.cni.plateformetesttechnique.service.TestService;
+import com.cni.plateformetesttechnique.service.DeveloppeurResponseService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,9 +17,14 @@ public class TestController {
     @Autowired
     private TestService testService;
 
-    @PostMapping("/create/{adminId}")
-    public ResponseEntity<Test> createTest(@RequestBody Test test, @PathVariable Long adminId) {
-        Test createdTest = testService.createTest(test, adminId);
+    @GetMapping
+    public List<Test> getAllTests() {
+        return testService.getAllTests();
+    }
+
+    @PostMapping("/create")
+    public ResponseEntity<Test> createTest(@RequestBody Test test) {
+        Test createdTest = testService.createTest(test);
         return ResponseEntity.ok(createdTest);
     }
     // 2️⃣ Modifier un test (seulement en brouillon)
@@ -27,15 +34,15 @@ public class TestController {
         return ResponseEntity.ok(updated);
     }
     @PostMapping("/{testId}/questions")
-    public ResponseEntity<List<TestQuestion>> addQuestionsToTest(@PathVariable Long testId, @RequestBody List<TestQuestion> testQuestions) {
-        List<TestQuestion> addedQuestions = testService.addQuestionsToTest(testId, testQuestions);
-        return ResponseEntity.ok(addedQuestions);
-    }
-    @GetMapping("/{testId}/questions")
-    public ResponseEntity<List<Question>> getQuestionsForTest(@PathVariable Long testId) {
-        List<Question> questions = testService.getQuestionsForTest(testId);
-        return ResponseEntity.ok(questions);
-    }
+//    public ResponseEntity<List<TestQuestion>> addQuestionsToTest(@PathVariable Long testId, @RequestBody List<TestQuestion> testQuestions) {
+//        List<TestQuestion> addedQuestions = testService.addQuestionsToTest(testId, testQuestions);
+//        return ResponseEntity.ok(addedQuestions);
+//    }
+//    @GetMapping("/{testId}/questions")
+//    public ResponseEntity<List<Question>> getQuestionsForTest(@PathVariable Long testId) {
+//        List<Question> questions = testService.getQuestionsForTest(testId);
+//        return ResponseEntity.ok(questions);
+//    }
     @GetMapping("/{testId}/details")
     public ResponseEntity<Test> getTestDetails(@PathVariable Long testId) {
         Test testDetails = testService.getTestDetails(testId);
@@ -46,11 +53,15 @@ public class TestController {
         Test publishedTest = testService.publishTest(testId, accesRestreint);
         return ResponseEntity.ok(publishedTest);
     }
-    @PostMapping("/{testId}/invite")
-    public ResponseEntity<String> inviteDevelopers(@PathVariable Long testId, @RequestBody List<Long> developerIds) {
-        testService.inviteDevelopers(testId, developerIds);
-        return ResponseEntity.ok("Invitations envoyées avec succès");
+//    @PostMapping("/{testId}/invite")
+//    public ResponseEntity<String> inviteDevelopers(@PathVariable Long testId, @RequestBody List<Long> developerIds) {
+//        testService.inviteDevelopers(testId, developerIds);
+//        return ResponseEntity.ok("Invitations envoyées avec succès");
+//    }
+    @GetMapping("/isCompleted")
+    public boolean isTestCompleted(
+            @RequestParam Long testId,
+            @RequestParam Long developpeurId) {
+        return testService.isTestCompleted(testId, developpeurId);
     }
-
-
 }

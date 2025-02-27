@@ -6,15 +6,30 @@ import lombok.*;
 import java.util.List;
 
 @Entity
-@Table(name = "administrateurs")
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
 public class Administrateur extends User {
 
-    private String grade; // Ex: "Responsable RH", "Tech Lead"
+    private String grade;
 
-    @OneToMany(mappedBy = "administrateur", cascade = CascadeType.ALL)
-    private List<Test> testsCrees;
+	public String getGrade() {
+		return grade;
+	}
+
+	public void setGrade(String grade) {
+		this.grade = grade;
+	}
+
+
+	public Administrateur() {
+		super();
+	} 
+	
+	public Administrateur(String username, String email, String password, String grade) {
+        super(username, email, password); // Appel au constructeur de la classe parente User
+        this.grade = grade;
+    }
+
+    
+    
+
+
 }

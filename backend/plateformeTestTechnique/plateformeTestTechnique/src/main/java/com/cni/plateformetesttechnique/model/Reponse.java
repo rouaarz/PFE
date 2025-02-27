@@ -22,68 +22,68 @@ public class Reponse {
     @JoinColumn(name = "question_id", nullable = false)
     private Question question;
 
-	public Long getId() {
-		return id;
-	}
+    public Long getId() {
+        return id;
+    }
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-	public String getContenu() {
-		return contenu;
-	}
+    public String getContenu() {
+        return contenu;
+    }
 
-	public void setContenu(String contenu) {
-		this.contenu = contenu;
-	}
+    public void setContenu(String contenu) {
+        this.contenu = contenu;
+    }
 
-	public boolean isEstCorrecte() {
-		return estCorrecte;
-	}
+    public boolean isEstCorrecte() {
+        return estCorrecte;
+    }
 
-	public void setEstCorrecte(boolean estCorrecte) {
-		this.estCorrecte = estCorrecte;
-	}
+    public void setEstCorrecte(boolean estCorrecte) {
+        this.estCorrecte = estCorrecte;
+    }
 
-	public LocalDateTime getDateSoumission() {
-		return dateSoumission;
-	}
+    public LocalDateTime getDateSoumission() {
+        return dateSoumission;
+    }
 
-	public void setDateSoumission(LocalDateTime dateSoumission) {
-		this.dateSoumission = dateSoumission;
-	}
+    public void setDateSoumission(LocalDateTime dateSoumission) {
+        this.dateSoumission = dateSoumission;
+    }
 
-	public Developpeur getDeveloppeur() {
-		return developpeur;
-	}
+    public Developpeur getDeveloppeur() {
+        return developpeur;
+    }
 
-	public void setDeveloppeur(Developpeur developpeur) {
-		this.developpeur = developpeur;
-	}
+    public void setDeveloppeur(Developpeur developpeur) {
+        this.developpeur = developpeur;
+    }
 
-	public Question getQuestion() {
-		return question;
-	}
+    public Question getQuestion() {
+        return question;
+    }
 
-	public void setQuestion(Question question) {
-		this.question = question;
-	}
+    public void setQuestion(Question question) {
+        this.question = question;
+    }
 
-	public Reponse(Long id, String contenu, boolean estCorrecte, LocalDateTime dateSoumission, Developpeur developpeur,
-			Question question) {
-		super();
-		this.id = id;
-		this.contenu = contenu;
-		this.estCorrecte = estCorrecte;
-		this.dateSoumission = dateSoumission;
-		this.developpeur = developpeur;
-		this.question = question;
-	}
+    public Reponse(Long id, String contenu, boolean estCorrecte, LocalDateTime dateSoumission, Developpeur developpeur,
+                   Question question) {
+        super();
+        this.id = id;
+        this.contenu = contenu;
+        this.estCorrecte = estCorrecte;
+        this.dateSoumission = dateSoumission;
+        this.developpeur = developpeur;
+        this.question = question;
+    }
 
-	public Reponse() {
-		super();
-	}
-    
+    public Reponse() {
+        super();
+    }
+
 
 }

@@ -2,6 +2,7 @@ package com.cni.plateformetesttechnique.service;
 
 
 import com.cni.plateformetesttechnique.model.Developpeur;
+
 import com.cni.plateformetesttechnique.model.InvitationTest;
 import com.cni.plateformetesttechnique.model.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,21 +41,22 @@ public class EmailService {
     }
 
     //////hedhi eli tastitha
-//    public void sendInvitationEmail(InvitationTest invitation) {
-//        System.out.println("📧 Tentative d'envoi d'email à : " + invitation.getDeveloppeur().getEmail()); // ✅ Debug
-//
-//        SimpleMailMessage message = new SimpleMailMessage();
-//        message.setTo("mahanouri2022@gmail.com"); // ✅ Email temporaire pour test
-//        message.setSubject("Invitation à passer un test !");
-//        message.setText("Bonjour,\n\n"
-//                + "Vous avez été invité à passer le test : " + invitation.getTest().getTitre() + ".\n"
-//                + "Cliquez sur le lien suivant pour accepter ou refuser l'invitation :\n\n"
-//                + "http://localhost:4200/invitations/" + invitation.getId() + "\n\n"
-//                + "Bonne chance !");
-//
-//        mailSender.send(message);
-//        System.out.println("✅ Email envoyé avec succès !");
-//    }
+ /* public void sendInvitationEmail(InvitationTest invitation) {
+       System.out.println("📧 Tentative d'envoi d'email à : " + invitation.getDeveloppeur().getEmail()); // ✅ Debug
+
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo("mahanouri2022@gmail.com"); // ✅ Email temporaire pour test
+        message.setSubject("Invitation à passer un test !");
+        message.setText("Bonjour,\n\n"
+                + "Vous avez été invité à passer le test : " + invitation.getTest().getTitre() + ".\n"
+                + "Cliquez sur le lien suivant pour accepter ou refuser l'invitation :\n\n"
+                + "http://localhost:4200/invitations/" + invitation.getId() + "\n\n"
+               + "Bonne chance !");
+
+       mailSender.send(message);
+        System.out.println("✅ Email envoyé avec succès !");
+   }*/
+    
     public void sendInvitationEmail(InvitationTest invitation) {
         String developerEmail = invitation.getDeveloppeur().getEmail(); // ✅ Récupération dynamique de l'email
 
@@ -72,6 +74,8 @@ public class EmailService {
         mailSender.send(message);
         System.out.println("✅ Email envoyé avec succès à " + developerEmail);
     }
+    
+   
 
 
 }

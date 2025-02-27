@@ -8,13 +8,17 @@ import jakarta.persistence.*;
 public class Developpeur extends User {
 
     private String specialite;
-    
-    @ElementCollection
+	private Double score;  // Score total du développeur
+
+
+	@ElementCollection
     @CollectionTable(name = "developpeur_technologies", joinColumns = @JoinColumn(name = "developpeur_id"))
     @Column(name = "technologie")
     private List<String> technologies;
 
     private int experience;
+	@OneToMany(mappedBy = "developpeur")
+	private List<DeveloppeurResponse> developpeurResponses;
 	@OneToMany(mappedBy = "developpeur", cascade = CascadeType.ALL)
 	private List<InvitationTest> invitations;
 	public Developpeur() {
@@ -28,7 +32,13 @@ public class Developpeur extends User {
 	public void setSpecialite(String specialite) {
 		this.specialite = specialite;
 	}
+	public Double getScore() {
+		return score;
+	}
 
+	public void setScore(Double score) {
+		this.score = score;
+	}
 	public List<String> getTechnologies() {
 		return technologies;
 	}
@@ -45,17 +55,18 @@ public class Developpeur extends User {
 		this.experience = experience;
 	}
 
-	public Developpeur(Long id, String email, String motDePasse, String role, String specialite,
-			List<String> technologies, int experience) {
-		super(id, email, motDePasse, role);
+	public Developpeur(String specialite, Double score, List<String> technologies, int experience,
+			List<DeveloppeurResponse> developpeurResponses, List<InvitationTest> invitations) {
+		super();
 		this.specialite = specialite;
+		this.score = score;
 		this.technologies = technologies;
 		this.experience = experience;
+		this.developpeurResponses = developpeurResponses;
+		this.invitations = invitations;
 	}
 
-	public Developpeur(Long id, String email, String motDePasse, String role) {
-		super(id, email, motDePasse, role);
-	} 
+	
 
     
 }
