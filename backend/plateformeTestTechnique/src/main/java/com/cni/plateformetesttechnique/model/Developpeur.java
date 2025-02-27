@@ -55,18 +55,18 @@ public class Developpeur extends User {
 		this.experience = experience;
 	}
 
-	public Developpeur(Long id, String email, String motDePasse, String role, String specialite,Double score,
-			List<String> technologies, int experience) {
-		super(id, email, motDePasse, role);
+	public Developpeur(String specialite, Double score, List<String> technologies, int experience,
+			List<DeveloppeurResponse> developpeurResponses, List<InvitationTest> invitations) {
+		super();
 		this.specialite = specialite;
 		this.score = score;
 		this.technologies = technologies;
 		this.experience = experience;
+		this.developpeurResponses = developpeurResponses;
+		this.invitations = invitations;
 	}
 
-	public Developpeur(Long id, String email, String motDePasse, String role) {
-		super(id, email, motDePasse, role);
-	} 
+	
 
     
 }
